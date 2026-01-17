@@ -31,20 +31,38 @@ export class Reel {
 
     private createSymbols(): void {
         // Create symbols for the reel, arranged horizontally
+
+         for (let i = 0; i < this.symbolCount; i++) {
+            const symbol = this.createRandomSymbol();
+            symbol.x = i * this.symbolSize;
+            this.symbols.push(symbol);
+            this.container.addChild(symbol);
+        }
     }
 
     private createRandomSymbol(): PIXI.Sprite {
-        // TODO:Get a random symbol texture
+        // Get a random symbol texture
+        const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
+        const textureName = SYMBOL_TEXTURES[randomIndex];
+        const texture = AssetLoader.getTexture(textureName);
 
-        // TODO:Create a sprite with the texture
+        // Create a sprite with the texture
+        const sprite = new PIXI.Sprite(texture);
+        sprite.width = this.symbolSize;
+        sprite.height = this.symbolSize;
 
-        return new PIXI.Sprite();
+        return sprite;
     }
 
-    public update(delta: number): void {
+    
+        public update(delta: number): void {
         if (!this.isSpinning && this.speed === 0) return;
 
-        // TODO:Move symbols horizontally
+       // TODO:Move symbols horizontally
+        const movement = this.speed * delta;
+        for (const symbol of this.symbols) {
+            symbol.x -= movement;
+        }
 
         // If we're stopping, slow down the reel
         if (!this.isSpinning && this.speed > 0) {
