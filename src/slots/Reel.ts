@@ -31,8 +31,7 @@ export class Reel {
 
     private createSymbols(): void {
         // Create symbols for the reel, arranged horizontally
-
-         for (let i = 0; i < this.symbolCount; i++) {
+        for (let i = 0; i < this.symbolCount; i++) {
             const symbol = this.createRandomSymbol();
             symbol.x = i * this.symbolSize;
             this.symbols.push(symbol);
@@ -54,14 +53,23 @@ export class Reel {
         return sprite;
     }
 
-    
-        public update(delta: number): void {
+    public update(delta: number): void {
         if (!this.isSpinning && this.speed === 0) return;
 
        // TODO:Move symbols horizontally
         const movement = this.speed * delta;
         for (const symbol of this.symbols) {
             symbol.x -= movement;
+
+            // Wrap symbols around when they move off the left edge
+            if (symbol.x <= -this.symbolSize) {
+                symbol.x += this.symbolCount * this.symbolSize;
+
+                // Replace with random symbol when wrapping
+                const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
+                const textureName = SYMBOL_TEXTURES[randomIndex];
+                symbol.texture = AssetLoader.getTexture(textureName);
+            }
         }
 
         // If we're stopping, slow down the reel
@@ -78,7 +86,10 @@ export class Reel {
 
     private snapToGrid(): void {
         // TODO: Snap symbols to horizontal grid positions
-
+        for (let i = 0; i < this.symbols.length; i++) {
+            const targetX = i * this.symbolSize;
+            this.symbols[i].x = targetX;
+        }
     }
 
     public startSpin(): void {
