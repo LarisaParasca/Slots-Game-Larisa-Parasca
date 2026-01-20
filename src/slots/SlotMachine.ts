@@ -37,6 +37,7 @@ export class SlotMachine {
     }
 
     private createBackground(): void {
+
         try {
             const background = new PIXI.Graphics();
             background.beginFill(0x000000, 0.5);
@@ -127,7 +128,16 @@ export class SlotMachine {
             console.log('Winner!');
 
             if (this.winAnimation) {
-                // TODO: Play the win animation found in "big-boom-h" spine
+                // Play the win animation found in "big-boom-h" spine
+                this.winAnimation.visible = true;
+                this.winAnimation.state.setAnimation(0, 'start', false);
+                
+                // Hide animation after a reasonable duration
+                setTimeout(() => {
+                    if (this.winAnimation) {
+                        this.winAnimation.visible = false;
+                    }
+                }, 3000);
             }
         }
     }
@@ -156,13 +166,13 @@ export class SlotMachine {
             if (winSpineData) {
                 this.winAnimation = new Spine(winSpineData.spineData);
 
-                this.winAnimation.x = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1)) / 2;
-                this.winAnimation.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;
-
+               this.winAnimation.x = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1)) / 2;
+               this.winAnimation.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;  
+              
                 this.winAnimation.visible = false;
 
                 this.container.addChild(this.winAnimation);
-            }
+            }   
         } catch (error) {
             console.error('Error initializing spine animations:', error);
         }
