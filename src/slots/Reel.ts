@@ -90,15 +90,15 @@ export class Reel {
                 symbol.x += this.symbolCount * this.symbolSize;
 
                 // Only replace with random symbol when actively spinning (not during slowdown)
-                // This ensures the symbols visible when stopping are preserved
-                if (this.isSpinning) {
-                    const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
-                    const textureName = SYMBOL_TEXTURES[randomIndex];
-                    const texture = AssetLoader.getTexture(textureName);
-                    if (texture) {
-                        symbol.texture = texture;
-                    }
-                }
+                // // This ensures the symbols visible when stopping are preserved
+                // if (this.isSpinning) {
+                //     const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
+                //     const textureName = SYMBOL_TEXTURES[randomIndex];
+                //     const texture = AssetLoader.getTexture(textureName);
+                //     if (texture) {
+                //         symbol.texture = texture;
+                //     }
+                // }
             }
         }
 
@@ -119,13 +119,26 @@ export class Reel {
         const reelWidth = this.symbolCount * this.symbolSize;
         
         for (const symbol of this.symbols) {
+            // Store original x position before normalization
+            const originalX = symbol.x;
+            
             // Normalize position to reel range
-            let x = symbol.x;
+            let x = originalX;
             x = ((x % reelWidth) + reelWidth) % reelWidth;
             
             // Round to nearest grid position
             const gridPosition = Math.round(x / this.symbolSize) % this.symbolCount;
             const targetX = gridPosition * this.symbolSize;
+            
+            // Check if symbol is wrapping from negative position to rightmost positions
+            // If original x is negative and target is in the last 2 positions, start from right side
+            const isWrappingToRight = originalX < 0 && gridPosition >= this.symbolCount - 2;
+            
+            if (isWrappingToRight) {
+                // Set initial position on the right side (outside visible area)
+                // This makes it appear to come from the right instead of sliding across
+                symbol.x = targetX + reelWidth;
+            }
             
             // Animate to target position with bounce effect using GSAP
             gsap.to(symbol, {
