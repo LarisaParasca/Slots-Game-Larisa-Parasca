@@ -81,9 +81,7 @@ export class Game {
         this.app.stage.pivot.set(this.CANVAS_WIDTH / 2, this.CANVAS_HEIGHT / 2);
     }
 
-    /**
-     * Handles keyboard input
-     */
+    // Handles keyboard input
     private handleKeyPress(event: KeyboardEvent): void {
         // Space bar to spin
         if (event.code === 'Space' || event.key === ' ') {
@@ -94,9 +92,7 @@ export class Game {
         }
     }
 
-    /**
-     * Cleanup method to properly destroy the game and free resources
-     */
+    // Cleanup method to properly destroy the game and free resources
     public destroy(): void {
         window.removeEventListener('resize', this.resize);
         window.removeEventListener('keydown', this.handleKeyPress);

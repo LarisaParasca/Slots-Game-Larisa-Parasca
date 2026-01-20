@@ -15,9 +15,9 @@ const SPIN_SPEED = 50; // Pixels per frame at full speed
 const SLOWDOWN_RATE = 0.95; // Multiplier applied each frame when slowing down
 const MIN_SPEED_THRESHOLD = 0.5; // Speed threshold below which reel stops completely
 
-/**
- * Represents a single reel in the slot machine with horizontal scrolling symbols
- */
+
+ // Represents a single reel in the slot machine with horizontal scrolling symbols
+ 
 export class Reel {
     public container: PIXI.Container;
     private symbols: PIXI.Sprite[];
@@ -115,7 +115,7 @@ export class Reel {
     }
 
     private snapToGrid(): void {
-        // lock in the currently displayed symbols to their nearest grid positions with GSAP bounce animation
+        // Lock in the currently displayed symbols to their nearest grid positions with GSAP bounce animation
         const reelWidth = this.symbolCount * this.symbolSize;
         
         for (const symbol of this.symbols) {

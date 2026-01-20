@@ -158,9 +158,8 @@ export class SlotMachine {
         this.spinButton = button;
     }
 
-    /**
-     * Disables the spin button visually and interactively
-     */
+     // Disables the spin button visually and interactively
+     
     private disableSpinButton(): void {
         if (this.spinButton) {
             const texture = AssetLoader.getTexture('button_spin_disabled.png');
@@ -171,9 +170,8 @@ export class SlotMachine {
         }
     }
 
-    /**
-     * Enables the spin button visually and interactively
-     */
+     // Enables the spin button visually and interactively
+     
      private enableSpinButton(): void {
         if (this.spinButton) {
             const texture = AssetLoader.getTexture('button_spin.png');
@@ -184,17 +182,16 @@ export class SlotMachine {
         }
     }
 
-    /**
-     * Clears all pending timeouts to prevent memory leaks
-     */
+   
+     // Clears all pending timeouts to prevent memory leaks
+     
     private clearTimeouts(): void {
         this.spinTimeouts.forEach(timeout => clearTimeout(timeout));
         this.spinTimeouts = [];
     }
 
-    /**
-     * Cleanup method to be called when destroying the slot machine
-     */
+      // Cleanup method to be called when destroying the slot machine
+     
     public destroy(): void {
         this.clearTimeouts();
         sound.stop('Reel spin');

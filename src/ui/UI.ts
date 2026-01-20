@@ -9,9 +9,8 @@ const BUTTON_HEIGHT = 80;
 const BUTTON_Y_OFFSET = 50; // Distance from bottom of screen
 const BUTTON_HOVER_SCALE = 1.05;
 
-/**
- * Manages the game UI elements including buttons and interactions
- */
+ // Manages the game UI elements including buttons and interactions
+
 export class UI {
     public container: PIXI.Container;
     private app: PIXI.Application;
@@ -55,24 +54,21 @@ export class UI {
         }
     }
 
-    /**
-     * Handles spin button click event
-     */
+    // Handles spin button click event
+     
     private onSpinButtonClick(): void {
         sound.play('Spin button');
         this.slotMachine.spin();
     }
 
-    /**
-     * Handles button hover enter event
-     */
+    // Handles button hover enter event
+     
     private onButtonOver(event: PIXI.FederatedPointerEvent): void {
         (event.currentTarget as PIXI.Sprite).scale.set(BUTTON_HOVER_SCALE);
     }
 
-    /**
-     * Handles button hover exit event
-     */
+     // Handles button hover exit event
+     
     private onButtonOut(event: PIXI.FederatedPointerEvent): void {
         (event.currentTarget as PIXI.Sprite).scale.set(1.0);
     }
