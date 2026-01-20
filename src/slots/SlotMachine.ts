@@ -37,7 +37,6 @@ export class SlotMachine {
     }
 
     private createBackground(): void {
-
         try {
             const background = new PIXI.Graphics();
             background.beginFill(0x000000, 0.5);
@@ -102,12 +101,12 @@ export class SlotMachine {
         for (let i = 0; i < this.reels.length; i++) {
             setTimeout(() => {
                 this.reels[i].stopSpin();
-
                 // If this is the last reel, check for wins and enable spin button
                 if (i === this.reels.length - 1) {
                     setTimeout(() => {
                         this.checkWin();
                         this.isSpinning = false;
+                        sound.stop('Reel spin');
 
                         if (this.spinButton) {
                             this.spinButton.texture = AssetLoader.getTexture('button_spin.png');
@@ -121,7 +120,7 @@ export class SlotMachine {
 
     private checkWin(): void {
         // Simple win check - just for demonstration
-        const randomWin = Math.random() < 0.3; // 30% chance of winning
+        const randomWin = Math.random() < 0.9; // 30% chance of winning
 
         if (randomWin) {
             sound.play('win');
@@ -166,8 +165,12 @@ export class SlotMachine {
             if (winSpineData) {
                 this.winAnimation = new Spine(winSpineData.spineData);
 
-               this.winAnimation.x = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1)) / 2;
-               this.winAnimation.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;  
+              //  this.winAnimation.x = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1)) / 2;
+               //  this.winAnimation.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;
+
+
+                   this.winAnimation.x = 500 - 30;
+                   this.winAnimation.y = 300;
               
                 this.winAnimation.visible = false;
 

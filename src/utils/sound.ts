@@ -1,9 +1,20 @@
-// TODO: Implement sound player using the "howler" package
+import { Howl } from 'howler';
+
+const sounds: Record<string, Howl> = {};
+
 export const sound = {
     add: (alias: string, url: string): void => {
-        console.log(`Sound added: ${alias} from ${url}`);
+        sounds[alias] = new Howl({
+            src: [url],
+            html5: false,
+            preload: true,
+            volume: 0.7,
+        });
     },
     play: (alias: string): void => {
-        console.log(`Playing sound: ${alias}`);
+        sounds[alias]?.play();
+    },
+    stop: (alias: string): void => {
+        sounds[alias]?.stop();
     }
 };
