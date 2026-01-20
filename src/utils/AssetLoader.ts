@@ -31,7 +31,7 @@ const SOUNDS = [
 ];
 
 const textureCache: Record<string, PIXI.Texture> = {};
-const spineCache: Record<string, any> = {};
+const spineCache: Record<string, { spineData: any }> = {};
 
 export class AssetLoader {
     constructor() {
@@ -62,7 +62,7 @@ export class AssetLoader {
                 console.log('Spine animations loaded successfully');
 
                 for (const [key, spine] of Object.entries(spineAssets)) {
-                    spineCache[key] = spine;
+                    spineCache[key] = spine as { spineData: any };
                 }
             } catch (error) {
                 console.error('Error loading spine animations:', error);
@@ -79,7 +79,9 @@ export class AssetLoader {
     private async loadSounds(): Promise<void> {
         try {
             SOUNDS.forEach(soundFile => {
-                sound.add(soundFile.split('.')[0], SOUNDS_PATH + soundFile);
+                const alias = soundFile.split('.')[0];
+                const url = SOUNDS_PATH + soundFile;
+                sound.add(alias, url);
             });
         } catch (error) {
             console.error('Error loading sounds:', error);
@@ -87,11 +89,15 @@ export class AssetLoader {
         }
     }
 
-    public static getTexture(name: string): PIXI.Texture {
-        return textureCache[name];
+    public static getTexture(name: string): PIXI.Texture | undefined {
+        const texture = textureCache[name];
+        if (!texture) {
+            console.warn(`Texture "${name}" not found in cache`);
+        }
+        return texture;
     }
 
-    public static getSpine(name: string): any {
+    public static getSpine(name: string): { spineData: any } | undefined {
         return spineCache[name];
     }
 }

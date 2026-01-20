@@ -3,6 +3,15 @@ import { SlotMachine } from '../slots/SlotMachine';
 import { AssetLoader } from '../utils/AssetLoader';
 import { sound } from '../utils/sound';
 
+// UI constants
+const BUTTON_WIDTH = 150;
+const BUTTON_HEIGHT = 80;
+const BUTTON_Y_OFFSET = 50; // Distance from bottom of screen
+const BUTTON_HOVER_SCALE = 1.05;
+
+/**
+ * Manages the game UI elements including buttons and interactions
+ */
 export class UI {
     public container: PIXI.Container;
     private app: PIXI.Application;
@@ -19,13 +28,17 @@ export class UI {
 
     private createSpinButton(): void {
         try {
-            this.spinButton = new PIXI.Sprite(AssetLoader.getTexture('button_spin.png'));
+            const texture = AssetLoader.getTexture('button_spin.png');
+            if (!texture) {
+                throw new Error('Spin button texture not found');
+            }
+            this.spinButton = new PIXI.Sprite(texture);
 
             this.spinButton.anchor.set(0.5);
             this.spinButton.x = this.app.screen.width / 2;
-            this.spinButton.y = this.app.screen.height - 50;
-            this.spinButton.width = 150;
-            this.spinButton.height = 80;
+            this.spinButton.y = this.app.screen.height - BUTTON_Y_OFFSET;
+            this.spinButton.width = BUTTON_WIDTH;
+            this.spinButton.height = BUTTON_HEIGHT;
 
             this.spinButton.interactive = true;
             this.spinButton.cursor = 'pointer';
@@ -42,16 +55,24 @@ export class UI {
         }
     }
 
+    /**
+     * Handles spin button click event
+     */
     private onSpinButtonClick(): void {
         sound.play('Spin button');
-
         this.slotMachine.spin();
     }
 
+    /**
+     * Handles button hover enter event
+     */
     private onButtonOver(event: PIXI.FederatedPointerEvent): void {
-        (event.currentTarget as PIXI.Sprite).scale.set(1.05);
+        (event.currentTarget as PIXI.Sprite).scale.set(BUTTON_HOVER_SCALE);
     }
 
+    /**
+     * Handles button hover exit event
+     */
     private onButtonOut(event: PIXI.FederatedPointerEvent): void {
         (event.currentTarget as PIXI.Sprite).scale.set(1.0);
     }

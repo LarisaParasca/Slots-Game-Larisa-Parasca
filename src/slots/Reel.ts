@@ -9,9 +9,14 @@ const SYMBOL_TEXTURES = [
     'symbol5.png',
 ];
 
-const SPIN_SPEED = 50; // Pixels per frame
-const SLOWDOWN_RATE = 0.95; // Rate at which the reel slows down
+// Reel animation constants
+const SPIN_SPEED = 50; // Pixels per frame at full speed
+const SLOWDOWN_RATE = 0.95; // Multiplier applied each frame when slowing down
+const MIN_SPEED_THRESHOLD = 0.5; // Speed threshold below which reel stops completely
 
+/**
+ * Represents a single reel in the slot machine with horizontal scrolling symbols
+ */
 export class Reel {
     public container: PIXI.Container;
     private symbols: PIXI.Sprite[];
@@ -45,6 +50,10 @@ export class Reel {
         const textureName = SYMBOL_TEXTURES[randomIndex];
         const texture = AssetLoader.getTexture(textureName);
 
+        if (!texture) {
+            throw new Error(`Texture "${textureName}" not found`);
+        }
+
         // Create a sprite with the texture
         const sprite = new PIXI.Sprite(texture);
         sprite.width = this.symbolSize;
@@ -56,7 +65,7 @@ export class Reel {
     public update(delta: number): void {
         if (!this.isSpinning && this.speed === 0) return;
 
-       // TODO:Move symbols horizontally
+        // Move symbols horizontally
         const movement = this.speed * delta;
         for (const symbol of this.symbols) {
             symbol.x -= movement;
@@ -68,7 +77,10 @@ export class Reel {
                 // Replace with random symbol when wrapping
                 const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
                 const textureName = SYMBOL_TEXTURES[randomIndex];
-                symbol.texture = AssetLoader.getTexture(textureName);
+                const texture = AssetLoader.getTexture(textureName);
+                if (texture) {
+                    symbol.texture = texture;
+                }
             }
         }
 
@@ -77,7 +89,7 @@ export class Reel {
             this.speed *= SLOWDOWN_RATE;
 
             // If speed is very low, stop completely and snap to grid
-            if (this.speed < 0.5) {
+            if (this.speed < MIN_SPEED_THRESHOLD) {
                 this.speed = 0;
                 this.snapToGrid();
             }
@@ -85,7 +97,7 @@ export class Reel {
     }
 
     private snapToGrid(): void {
-        // TODO: Snap symbols to horizontal grid positions
+        // Snap symbols to horizontal grid positions
         for (let i = 0; i < this.symbols.length; i++) {
             const targetX = i * this.symbolSize;
             this.symbols[i].x = targetX;
