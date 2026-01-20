@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import gsap from 'gsap';
 import { AssetLoader } from '../utils/AssetLoader';
 
 const SYMBOL_TEXTURES = [
@@ -114,7 +115,7 @@ export class Reel {
     }
 
     private snapToGrid(): void {
-        // lock in the currently displayed symbols to their nearest grid positions
+        // lock in the currently displayed symbols to their nearest grid positions with GSAP bounce animation
         const reelWidth = this.symbolCount * this.symbolSize;
         
         for (const symbol of this.symbols) {
@@ -124,7 +125,14 @@ export class Reel {
             
             // Round to nearest grid position
             const gridPosition = Math.round(x / this.symbolSize) % this.symbolCount;
-            symbol.x = gridPosition * this.symbolSize;
+            const targetX = gridPosition * this.symbolSize;
+            
+            // Animate to target position with bounce effect using GSAP
+            gsap.to(symbol, {
+                x: targetX,
+                duration: 0.5,
+                ease: 'back.out'
+            });
         }
     }
 

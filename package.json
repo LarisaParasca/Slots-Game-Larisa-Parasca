@@ -9,6 +9,7 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
+    "gsap": "^3.14.2",
     "howler": "^2.2.4",
     "pixi-spine": "^4.0.4",
     "pixi.js": "^7.3.2"
