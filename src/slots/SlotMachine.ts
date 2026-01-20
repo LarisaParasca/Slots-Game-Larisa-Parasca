@@ -169,8 +169,8 @@ export class SlotMachine {
                //  this.winAnimation.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;
 
 
-                   this.winAnimation.x = 500 - 30;
-                   this.winAnimation.y = 300;
+                   this.winAnimation.x = (SYMBOL_SIZE * SYMBOLS_PER_REEL + 40) / 2,
+                   this.winAnimation.y = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1) + 40) / 2;
               
                 this.winAnimation.visible = false;
 
