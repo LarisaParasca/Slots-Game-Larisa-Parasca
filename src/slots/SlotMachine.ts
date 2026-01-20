@@ -120,7 +120,7 @@ export class SlotMachine {
 
     private checkWin(): void {
         // Simple win check - just for demonstration
-        const randomWin = Math.random() < 0.9; // 30% chance of winning
+        const randomWin = Math.random() < 0.3; // 30% chance of winning
 
         if (randomWin) {
             sound.play('win');
