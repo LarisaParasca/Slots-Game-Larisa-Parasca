@@ -32,6 +32,20 @@ export class Reel {
         this.symbolCount = symbolCount;
 
         this.createSymbols();
+        this.setupMask();
+    }
+
+    private setupMask(): void {
+        // Create a mask to clip symbols to the visible reel width
+        // Only show symbols within the background bounds (SYMBOL_SIZE * SYMBOLS_PER_REEL)
+        const visibleWidth = this.symbolSize * this.symbolCount;
+        const mask = new PIXI.Graphics();
+        mask.beginFill(0xffffff);
+        mask.drawRect(0, 0, visibleWidth, this.symbolSize);
+        mask.endFill();
+        this.container.mask = mask;
+        mask.alpha = 0;
+        this.container.addChild(mask);
     }
 
     private createSymbols(): void {
@@ -74,12 +88,15 @@ export class Reel {
             if (symbol.x <= -this.symbolSize) {
                 symbol.x += this.symbolCount * this.symbolSize;
 
-                // Replace with random symbol when wrapping
-                const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
-                const textureName = SYMBOL_TEXTURES[randomIndex];
-                const texture = AssetLoader.getTexture(textureName);
-                if (texture) {
-                    symbol.texture = texture;
+                // Only replace with random symbol when actively spinning (not during slowdown)
+                // This ensures the symbols visible when stopping are preserved
+                if (this.isSpinning) {
+                    const randomIndex = Math.floor(Math.random() * SYMBOL_TEXTURES.length);
+                    const textureName = SYMBOL_TEXTURES[randomIndex];
+                    const texture = AssetLoader.getTexture(textureName);
+                    if (texture) {
+                        symbol.texture = texture;
+                    }
                 }
             }
         }
@@ -97,10 +114,17 @@ export class Reel {
     }
 
     private snapToGrid(): void {
-        // Snap symbols to horizontal grid positions
-        for (let i = 0; i < this.symbols.length; i++) {
-            const targetX = i * this.symbolSize;
-            this.symbols[i].x = targetX;
+        // lock in the currently displayed symbols to their nearest grid positions
+        const reelWidth = this.symbolCount * this.symbolSize;
+        
+        for (const symbol of this.symbols) {
+            // Normalize position to reel range
+            let x = symbol.x;
+            x = ((x % reelWidth) + reelWidth) % reelWidth;
+            
+            // Round to nearest grid position
+            const gridPosition = Math.round(x / this.symbolSize) % this.symbolCount;
+            symbol.x = gridPosition * this.symbolSize;
         }
     }
 
